@@ -1,9 +1,7 @@
 package org.mnr.dao;
 
-import java.util.List;
-
+import java.util.Collection;
 import org.mnr.model.Employee;
-import org.springframework.stereotype.Repository;
 
 /**
  * 
@@ -13,14 +11,16 @@ import org.springframework.stereotype.Repository;
 
 public interface EmployeeDAO {
 	
-	public Employee getById(int id);
+	public Employee getByCode(int id);
 	
-	public boolean insert(Employee employee);
+	public boolean save(Employee employee);
 	
-	public boolean update(Employee employee);
+	public boolean merge(Employee employee);
 	
 	public boolean delete (Employee employee);
 	
-	public boolean merge(List<Employee> employees);
+	public void mergeEmployees(Collection<Employee> employees);
+	
+	public Collection<Employee> getAllEmployees();
 
 }

@@ -17,6 +17,16 @@ public class Employee {
 	private String phoneNumber;
 	public Employee() {
 	}
+	
+	
+	public Employee(int code, String name, String department, String phoneNumber) {
+		this.code = code;
+		this.name = name;
+		this.department = department;
+		this.phoneNumber = phoneNumber;
+	}
+
+
 	public int getCode() {
 		return code;
 	}
@@ -80,6 +90,20 @@ public class Employee {
 		} else if (!phoneNumber.equals(other.phoneNumber))
 			return false;
 		return true;
+	}
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("Employee [code=");
+		builder.append(code);
+		builder.append(", name=");
+		builder.append(name);
+		builder.append(", department=");
+		builder.append(department);
+		builder.append(", phoneNumber=");
+		builder.append(phoneNumber);
+		builder.append("]");
+		return builder.toString();
 	}
 	
 

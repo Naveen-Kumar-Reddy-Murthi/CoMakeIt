@@ -1,21 +1,24 @@
 package org.mnr.dao;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.List;
-
+import java.util.ArrayList;
+import java.util.Collection;
 
 import org.mnr.model.Employee;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
-import org.hibernate.SessionFactory; 
+import org.hibernate.Criteria;
+import org.hibernate.SessionFactory;
 import org.hibernate.classic.Session;
+
+/**
+ * 
+ * @author Naveen Reddy
+ *
+ */
 
 @Repository(value = "employeeDAOImpl")
 public class EmployeeDAOImpl implements EmployeeDAO {
-	
-	
+
 	private SessionFactory sessionFactory;
 
 	@Autowired
@@ -24,59 +27,79 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 	}
 
 	@Override
-	public boolean merge(List<Employee> employees) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-		
-	
-	
-	
-	@Override
-	public Employee getById(int id) {
-		return null;
-	}
-	
-	@Override
-	public boolean insert(Employee employee) {
-		int id= -1;
-		Session session = sessionFactory.openSession();
-		session.beginTransaction();
-		  session.persist(employee);
-		session.getTransaction().commit();
-		session.close();
-		if(id >0)
-			return true;
-		else
-		return false;
+	public void mergeEmployees(Collection<Employee> updatedRecordList) {
+		Employee temEmployee = null;
+
+		for (Employee employee : updatedRecordList) {
+
+			temEmployee = getByCode(employee.getCode());
+
+			if (temEmployee == null)
+				save(employee);
+			else
+				merge(employee);
+
+		}
+
+		Collection<Employee> backUpRecordList = getAllEmployees();
+
+		backUpRecordList.removeAll(updatedRecordList);
+
+		System.out.println(backUpRecordList);
+
+		for (Employee employee : backUpRecordList) {
+			delete(employee);
+		}
+
 	}
 
 	@Override
-	public boolean update(Employee employee) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean save(Employee employee) {
+		Session session = sessionFactory.openSession();
+		session.beginTransaction();
+		session.save(employee);
+		session.getTransaction().commit();
+		session.close();
+
+		return true;
+	}
+
+	@Override
+	public boolean merge(Employee employee) {
+
+		Session session = sessionFactory.openSession();
+		session.beginTransaction();
+		session.merge(employee);
+		session.getTransaction().commit();
+		session.close();
+
+		return true;
 	}
 
 	@Override
 	public boolean delete(Employee employee) {
-		// TODO Auto-generated method stub
-		return false;
+		Session session = sessionFactory.openSession();
+		session.beginTransaction();
+		session.delete(employee);
+		session.getTransaction().commit();
+		session.close();
+		return true;
 	}
 
-	
-	
-	private static final class EmployeeMapper implements RowMapper<Employee>{
-
-		@Override
-		public Employee mapRow(ResultSet resultSet, int rowNum) throws SQLException {
-			Employee employee = new Employee();
-			employee.setCode(resultSet.getInt("CODE"));
-			employee.setName(resultSet.getString("NAME"));
-			employee.setDepartment(resultSet.getString("DEPARTMENT"));
-			employee.setPhoneNumber(resultSet.getString("PHONENUMBER"));
-			return employee;
-		}
-		
+	@Override
+	public Collection<Employee> getAllEmployees() {
+		Session session = sessionFactory.openSession();
+		Criteria criteria = session.createCriteria(Employee.class);
+		@SuppressWarnings("unchecked")
+		ArrayList<Employee> employeeRecords = (ArrayList<Employee>) criteria
+				.list();
+		return employeeRecords;
 	}
 
+	@Override
+	public Employee getByCode(int id) {
+		Session session = sessionFactory.openSession();
+		Employee employee = (Employee) session.get(Employee.class, 1);
+		return employee;
+	}
 }
