@@ -52,7 +52,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 
 	}
 
-	@Override @Transactional
+	@Override @Transactional(rollbackFor = Exception.class)
 	public boolean save(Employee employee) {
 		Session session = sessionFactory.openSession();
 		session.beginTransaction();
