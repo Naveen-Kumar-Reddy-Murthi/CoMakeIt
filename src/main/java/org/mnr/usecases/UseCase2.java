@@ -2,6 +2,8 @@ package org.mnr.usecases;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
 
 import org.mnr.model.Employee;
 
@@ -16,6 +18,12 @@ public class UseCase2 {
 	public void add(Employee employee){
 		if(!employeeList.contains(employee))
 			employeeList.add(employee);
+	}
+	
+	public Collection<Employee> add(Iterator<Employee> itr1,Iterator<Employee> itr2){
+		Collection<Employee> employeeRecords = new HashSet<Employee>();
+		
+		return employeeRecords;
 	}
 	
 	public static void main(String[] args) {

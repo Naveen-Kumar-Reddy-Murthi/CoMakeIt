@@ -6,6 +6,7 @@ import java.util.Collection;
 import org.mnr.model.Employee;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
 import org.hibernate.classic.Session;
@@ -45,15 +46,13 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 
 		backUpRecordList.removeAll(updatedRecordList);
 
-		System.out.println(backUpRecordList);
-
 		for (Employee employee : backUpRecordList) {
 			delete(employee);
 		}
 
 	}
 
-	@Override
+	@Override @Transactional
 	public boolean save(Employee employee) {
 		Session session = sessionFactory.openSession();
 		session.beginTransaction();
